@@ -1,0 +1,48 @@
+<html>
+    <header>
+        <script>
+
+            window.addEventListener("bridge_event", bridge_event_handler);
+            function bridge_event_handler(param) {
+                console.log("bridge event");
+                var log=document.getElementById("log");
+                log.innerHTML= "event param: <br/>"  + JSON.stringify(param.msg);
+            }
+
+            function action_callback(param, userinfo) {
+                console.log(param)
+                var log=document.getElementById("log");
+                log.innerHTML= "callback param: <br/>" + JSON.stringify(param) + "<br/> userinfo:<br/>" + JSON.stringify(userinfo);
+            }
+        
+            function invoke_bridge_action1() {
+                var bridgeObj = {
+                    action: "test_action1",
+                    param: "param1",
+                }
+                window.webkit.messageHandlers.Bridge.postMessage(JSON.stringify(bridgeObj));
+                var log=document.getElementById("log");
+                log.innerHTML= "";
+            }
+
+            function invoke_bridge_action2() {
+                var bridgeObj = {
+                    action: "test_action2",
+                    param: {a: 1, b: true, c: "c"},
+                    callback: action_callback.name,
+                    userinfo: {d:2, e:false, f:"f"}
+                }
+                window.webkit.messageHandlers.Bridge.postMessage(JSON.stringify(bridgeObj));
+                var log=document.getElementById("log");
+                log.innerHTML= "";
+            }
+        </script>
+    </header>
+    <body>
+        <input type="button" onclick="invoke_bridge_action1()" value="Action 1"/>
+        <input type="button" onclick="invoke_bridge_action2()" value="Action 2"/><br/>
+        <label id = "log"></label><br/>
+
+        
+    </body>
+</html>
