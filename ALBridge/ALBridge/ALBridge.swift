@@ -10,7 +10,9 @@ import WebKit
 
 public typealias JSActionCompletionCallback = (_ callbackParameter: String) -> Void
 
-public typealias JSAction = (_ message: WKScriptMessage, _ parameter: Any?, _ completionHandler: JSActionCompletionCallback) -> Void
+public typealias JSActionProgresseChangedCallback = (_ progress: Int) -> Void
+
+public typealias JSAction = (_ message: WKScriptMessage, _ parameter: Any?, _ completionHandler: @escaping JSActionCompletionCallback, _ progressChangedHandler: @escaping JSActionProgresseChangedCallback) -> Void
 
 public class ALBridge: NSObject, WKScriptMessageHandler {
     
@@ -68,6 +70,7 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
         
         
         let callbackHandler = dic["callback"]
+        let progressChangedHandler = dic["progressChanged"]
         let userInfo = dic["userinfo"]
         let param = dic["param"]
         let actionName = dic["action"] as! String
@@ -77,7 +80,7 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
         }
         
         let callback = { (callbackParameter: String?) in
-            guard let jsCallbackHandler = callbackHandler else {
+            guard let callbackHandler = callbackHandler else {
                 return
             }
             var userInfoJSONStr: String? = nil
@@ -85,14 +88,29 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
                 if let jsonData = try? JSONSerialization.data(withJSONObject: userInfo, options: []) {
                     userInfoJSONStr = String.init(data: jsonData, encoding: .utf8)
                 }
-                
             }
-            let callbackJSCode = "\(jsCallbackHandler)(\(callbackParameter ?? "null"), \(userInfoJSONStr ?? "null"))"
+            let callbackJSCode = "\(callbackHandler)(\(callbackParameter ?? "null"), \(userInfoJSONStr ?? "null"))"
             
             scriptMessage.webView?.evaluateJavaScript(callbackJSCode, completionHandler: nil)
         }
         
-        handler(scriptMessage, param, callback)
+        let progressChanged = { (progress: Int) in
+            guard  let progressChangedHandler = progressChangedHandler else {
+                return
+            }
+            var userInfoJSONStr: String? = nil
+            if let userInfo = userInfo {
+                if let jsonData = try? JSONSerialization.data(withJSONObject: userInfo, options: []) {
+                    userInfoJSONStr = String.init(data: jsonData, encoding: .utf8)
+                }
+            }
+            let callbackJSCode = "\(progressChangedHandler)(\(progress), \(userInfoJSONStr ?? "null"))"
+            
+            scriptMessage.webView?.evaluateJavaScript(callbackJSCode, completionHandler: nil)
+            
+        }
+        
+        handler(scriptMessage, param, callback, progressChanged)
     }
     
     // MARK: - Event

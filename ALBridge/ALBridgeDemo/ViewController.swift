@@ -28,15 +28,34 @@ class ViewController: UIViewController {
         let bridge = ALBridge.init()
         webView.registerJSBridge(bridge)
         
-        webView.registerJSAction("test_action1", action: { (message, param, callback) in
+        webView.registerJSAction("test_action1", action: { (message, param, _, _) in
             self.logView.text += "\(param as! String) \n"
         })
         
-        webView.registerJSAction("test_action2", action: { (message, param, callback) in
+        webView.registerJSAction("test_action2", action: { (message, param, completionHandler, progressChangedHandler) in
             
             self.logView.text += "\(String(describing: param)) \n"
             
-            callback("\"call back param\"")
+            let queue = DispatchQueue.global()
+            queue.async {
+                DispatchQueue.main.async {
+                    progressChangedHandler(25)
+                }
+                Thread.sleep(forTimeInterval: 1)
+                DispatchQueue.main.async {
+                    progressChangedHandler(50)
+                }
+                Thread.sleep(forTimeInterval: 1)
+                DispatchQueue.main.async {
+                    progressChangedHandler(75)
+                }
+                Thread.sleep(forTimeInterval: 1)
+                DispatchQueue.main.async {
+                    progressChangedHandler(100)
+                    completionHandler("\"call back param\"")
+                }
+            }
+            
         })
         
         webView.addWhitelist(url)

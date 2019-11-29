@@ -29,13 +29,13 @@ JSAction is a block of code that can be invoked by JavaScript. It needs to be re
    
 You can add JSAction and action name in to ```ALBridge.handler``` directly.
 ```swift
-bridge.handlers["action_name"] = { (message, param, callback) in
+bridge.handlers["action_name"] = { (message, param, completionHandler, progressChangedHandler) in
     /* implement */
 }
 ```
 or you can invoke ``` registerJSAction(_ name: String, action: @escaping JSAction)```
 ```swift
-webView.registerJSAction("test_action1", action: { (message, param, callback) in
+webView.registerJSAction("test_action1", action: { (message, param, completionHandler, progressChangedHandler) in
     /* implement */
 })
 ```
