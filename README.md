@@ -7,8 +7,8 @@ AL is short for Anlan, the name of an ancient bridge in Dujiangyan, China.
     JSAction is a block of code that can be invoked by JavaScript. It needs to be registered in ALBridge before it can be invoked by JavaScript. The result of JSAction is returned through asynchronous callbacks.
 - Dispatch native event  
     Native event can be dispatched to the window object and in JavaScript code it can be subscribed by  ```window.addEventListener(event, handler)```
-- White list  
-    Only sites on the white list can use ALBridge.
+- Whitelist  
+    Only sites on the whitelist can use ALBridge.
 
 
 # How to install
@@ -21,7 +21,7 @@ pod 'ALBridge'
 
 ```swift
 let bridge = ALBridge.init()
-webView.registerJSBirdge(bridge)
+webView.registerJSBridge(bridge)
 ```
 
 ## Register JSAction
@@ -48,33 +48,33 @@ ALBridge supports dispatch native events to the windows object of JavaScript.
 webView.dispatchEvent(name: "event_name", content: params)
 ```
 
-## White list
-ALBridge will check whether the current url of wkwebview is on the white list before the native event is dispatched or JSActivon be executed.  
+## Whitelist
+ALBridge will check whether the current url of wkwebview is on the whitelist before the native event is dispatched or JSActivon be executed.  
 Whitelist verification only validates the scheme, host, and port of the url.  
-If the white list of ALBrige is empty it means there is no verification. 
+If the whitelist of ALBrige is empty it means there is no verification. 
 
-- Add url to white list:  
+- Add url to whitelist:  
     ```swift
-    webView.addWhitList(url)
+    webView.addWhitelist(url)
     ```
     or
     ```swift
-    bridge.addWhitList(url)
+    bridge.addWhitelist(url)
     ```
-- Remove url from white list  
+- Remove url from whitelist  
     ```swift
-    webView.removeWhitList(url)
+    webView.removeWhitelist(url)
     ```
     or
     ```swift
-    bridge.removeWhitList(url)
+    bridge.removeWhitelist(url)
     ```
 
-- Clean white list      
+- Clean whitelist      
     ```swift
-    webView.clearWhitList()
+    webView.clearWhitelist()
     ```
     or
     ```swift
-    bridge.clearWhitList()
+    bridge.clearWhitelist()
     ```

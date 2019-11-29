@@ -8,19 +8,19 @@
 
 import WebKit
 
-public typealias JSActionCompleteCallback = (_ callbackParameter: String) -> Void
+public typealias JSActionCompletionCallback = (_ callbackParameter: String) -> Void
 
-public typealias JSAction = (_ message: WKScriptMessage, _ parameter: Any?, _ actionHandler: JSActionCompleteCallback) -> Void
+public typealias JSAction = (_ message: WKScriptMessage, _ parameter: Any?, _ completionHandler: JSActionCompletionCallback) -> Void
 
 public class ALBridge: NSObject, WKScriptMessageHandler {
     
-    // MARK: - White list
+    // MARK: - Whitelist
     private var whiteList: Set<String> = []
     private func simplifyURL(_ url: URL) -> String {
         return "\(url.scheme ?? "")://\(url.host ?? ""):\(url.port ?? 0)"
     }
     
-    private func verifyWhiteList(url: URL) -> Bool {
+    private func verifyWhitelist(url: URL) -> Bool {
         let simplifiedURL = simplifyURL(url)
         
         if (whiteList.count > 0 && whiteList.contains(simplifiedURL) == false) {
@@ -29,26 +29,26 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
         return true
     }
     
-    public func addWhitList(_ url: URL) {
+    public func addWhitelist(_ url: URL) {
         let simplifiedURL = simplifyURL(url)
         
         whiteList.insert(simplifiedURL)
     }
     
-    public func removeWhitList(_ url: URL) {
+    public func removeWhitelist(_ url: URL) {
         let simplifiedURL = simplifyURL(url)
         
         whiteList.remove(simplifiedURL)
     }
     
-    public func clearWhitList() {
+    public func clearWhitelist() {
         whiteList.removeAll()
     }
     
     // MARK: - WKScriptMessageHandler
     
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if (verifyWhiteList(url: (message.webView?.url)!) == false) {
+        if (verifyWhitelist(url: (message.webView?.url)!) == false) {
             return
         }
         
@@ -98,7 +98,7 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
     // MARK: - Event
     
     public func dispatchEvent(to webView:WKWebView, name: String, eventMessage: String?) {
-        if (verifyWhiteList(url: (webView.url)!) == false) {
+        if (verifyWhitelist(url: (webView.url)!) == false) {
             return
         }
         
