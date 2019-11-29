@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         }
         
         let bridge = ALBridge.init()
-        webView.registerJSBirdge(bridge)
+        webView.registerJSBridge(bridge)
         
         webView.registerJSAction("test_action1", action: { (message, param, callback) in
             self.logView.text += "\(param as! String) \n"
@@ -39,9 +39,7 @@ class ViewController: UIViewController {
             callback("\"call back param\"")
         })
         
-        webView.addWhitList(url)
-
-        bridge.addWhitList(url)
+        webView.addWhitelist(url)
         let request = URLRequest(url: url)
         webView.load(request)
     }
