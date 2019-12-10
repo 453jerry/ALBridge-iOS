@@ -8,7 +8,7 @@
 
 import WebKit
 
-public typealias JSActionCompletionCallback = (_ callbackParameter: String) -> Void
+public typealias JSActionCompletionCallback = (_ result: String) -> Void
 
 public typealias JSActionProgresseChangedCallback = (_ progress: Int) -> Void
 
@@ -79,7 +79,7 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
             return
         }
         
-        let callback = { (callbackParameter: String?) in
+        let callback = { (result: String?) in
             guard let callbackHandler = callbackHandler else {
                 return
             }
@@ -89,7 +89,7 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
                     userInfoJSONStr = String.init(data: jsonData, encoding: .utf8)
                 }
             }
-            let callbackJSCode = "\(callbackHandler)(\(callbackParameter ?? "null"), \(userInfoJSONStr ?? "null"))"
+            let callbackJSCode = "\(callbackHandler)(\(result ?? "null"), \(userInfoJSONStr ?? "null"))"
             
             scriptMessage.webView?.evaluateJavaScript(callbackJSCode, completionHandler: nil)
         }

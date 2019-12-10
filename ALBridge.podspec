@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ALBridge"
-  spec.version      = "1.0.0"
+  spec.version      = "1.1.0"
   spec.summary      = "ALBridge is a javascript bridge(JSBridge) for WKWebView on iOS."
 
   # This description is used to generate tags and improve search results.
