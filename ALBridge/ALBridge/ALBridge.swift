@@ -123,5 +123,26 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
         let js = "var bridgeEvent=new Event('\(name)');bridgeEvent.msg=\(eventMessage ?? "null"); window.dispatchEvent(bridgeEvent);"
         webView.evaluateJavaScript(js, completionHandler: nil)
     }
-}
+    
+    public func dispatchEvent(to webView:WKWebView, name: String) {
+        self.dispatchEvent(to: webView, name: name, eventMessage: nil)
+    }
 
+    public func dispatchEvent<T : Encodable>(to webView:WKWebView, name: String, content: T) throws {
+        let data = try JSONEncoder().encode(content)
+        let msg = String.init(data: data, encoding: .utf8)
+        self.dispatchEvent(to: webView, name: name, eventMessage: msg)
+    }
+    
+    public func dispatchEvent(to webView:WKWebView, name: String, content: [String: Any]) throws {
+        let data = try JSONSerialization.data(withJSONObject: content, options: [])
+        let msg: String? = String.init(data: data, encoding: .utf8)
+        self.dispatchEvent(to: webView, name: name, eventMessage: msg)
+    }
+    
+    public func dispatchEvent(to webView:WKWebView, name: String, content: [Any]) throws {
+        let data = try JSONSerialization.data(withJSONObject: content, options: [])
+        let msg: String? = String.init(data: data, encoding: .utf8)
+        self.dispatchEvent(to: webView, name: name, eventMessage: msg)
+    }
+}

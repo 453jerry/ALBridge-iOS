@@ -28,11 +28,11 @@ class ViewController: UIViewController {
         let bridge = ALBridge.init()
         webView.registerJSBridge(bridge)
         
-        webView.registerJSAction("test_action1", action: { (message, param, _, _) in
+        webView.javascriptBridge.handlers["test_action1"] = { (message, param, _, _) in
             self.logView.text += "\(param as! String) \n"
-        })
+        }
         
-        webView.registerJSAction("test_action2", action: { (message, param, completionHandler, progressChangedHandler) in
+        webView.javascriptBridge.handlers["test_action2"] = { (message, param, completionHandler, progressChangedHandler) in
             
             self.logView.text += "\(String(describing: param)) \n"
             
@@ -56,15 +56,15 @@ class ViewController: UIViewController {
                 }
             }
             
-        })
+        }
         
-        webView.addWhitelist(url)
+        webView.javascriptBridge.addWhitelist(url)
         let request = URLRequest(url: url)
         webView.load(request)
     }
 
     @IBAction func sendEvent_Touched(_ sender: Any) {
-        webView.dispatchEvent(name: "bridge_event", content: "event param")
+        try! webView.dispatchEvent(name: "bridge_event", content: "event param")
     }
 }
 
