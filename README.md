@@ -33,12 +33,7 @@ bridge.handlers["action_name"] = { (message, param, completionHandler, progressC
     /* implement */
 }
 ```
-or you can invoke ``` registerJSAction(_ name: String, action: @escaping JSAction)```
-```swift
-webView.registerJSAction("test_action1", action: { (message, param, completionHandler, progressChangedHandler) in
-    /* implement */
-})
-```
+
 The callback handler of JSAction can be ignored if there is no result to return.
 
 ## Dispatch native event
@@ -55,26 +50,14 @@ If the whitelist of ALBrige is empty it means there is no verification.
 
 - Add url to whitelist:  
     ```swift
-    webView.addWhitelist(url)
-    ```
-    or
-    ```swift
     bridge.addWhitelist(url)
     ```
 - Remove url from whitelist  
-    ```swift
-    webView.removeWhitelist(url)
-    ```
-    or
     ```swift
     bridge.removeWhitelist(url)
     ```
 
 - Clean whitelist      
-    ```swift
-    webView.clearWhitelist()
-    ```
-    or
     ```swift
     bridge.clearWhitelist()
     ```
