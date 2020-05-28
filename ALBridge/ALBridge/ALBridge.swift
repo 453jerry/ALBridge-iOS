@@ -50,7 +50,10 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
     // MARK: - WKScriptMessageHandler
     
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if (verifyWhitelist(url: (message.webView?.url)!) == false) {
+        guard let url = message.webView?.url else {
+            return
+        }
+        if (verifyWhitelist(url: url) == false) {
             return
         }
         
@@ -64,16 +67,23 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
     public var handlers: [String : JSAction] = [:]
     
     private func invokeJSAction(scriptMessage: WKScriptMessage) {
-        let body = scriptMessage.body as! String
-        let data = body.data(using: String.Encoding.utf8)
-        let dic = (try? JSONSerialization.jsonObject(with: data!, options: [])) as! Dictionary<String, Any>
-        
+        guard let body: String = scriptMessage.body as? String else {
+            return
+        }
+        guard let data = body.data(using: String.Encoding.utf8) else {
+            return
+        }
+        guard let dic = (try? JSONSerialization.jsonObject(with: data, options: [])) as? Dictionary<String, Any> else {
+            return
+        }
         
         let callbackHandler = dic["callback"]
         let progressChangedHandler = dic["progressChanged"]
         let userInfo = dic["userinfo"]
         let param = dic["param"]
-        let actionName = dic["action"] as! String
+        guard let actionName = dic["action"] as? String else {
+            return
+        }
         
         guard let handler: JSAction = handlers[actionName] else {
             return
@@ -116,7 +126,10 @@ public class ALBridge: NSObject, WKScriptMessageHandler {
     // MARK: - Event
     
     public func dispatchEvent(to webView:WKWebView, name: String, eventMessage: String?) {
-        if (verifyWhitelist(url: (webView.url)!) == false) {
+        guard let url = webView.url else {
+            return
+        }
+        if (verifyWhitelist(url: url) == false) {
             return
         }
         

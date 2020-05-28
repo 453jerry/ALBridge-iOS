@@ -14,9 +14,9 @@ public extension WKWebView {
     private struct AssociatedKeys {
         static var javascriptBridge = "ANLAN_BRIDGE"
     }
-    var javascriptBridge: ALBridge {
+    var javascriptBridge: ALBridge? {
         get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.javascriptBridge) as! ALBridge
+            return objc_getAssociatedObject(self, &AssociatedKeys.javascriptBridge) as? ALBridge
         }
     }
     
@@ -30,18 +30,18 @@ public extension WKWebView {
     
     // MARK: - Dispatch event
     func dispatchEvent( name: String) {
-        self.javascriptBridge.dispatchEvent(to: self, name: name, eventMessage: nil)
+        self.javascriptBridge?.dispatchEvent(to: self, name: name, eventMessage: nil)
     }
 
     func dispatchEvent<T : Encodable>( name: String, content: T) throws {
-        try self.javascriptBridge.dispatchEvent(to: self, name: name, content: content)
+        try self.javascriptBridge?.dispatchEvent(to: self, name: name, content: content)
     }
     
     func dispatchEvent(name: String, content: [String: Any]) throws {
-        try self.javascriptBridge.dispatchEvent(to: self, name: name, content: content)
+        try self.javascriptBridge?.dispatchEvent(to: self, name: name, content: content)
     }
     
     func dispatchEvent(name: String, content: [Any]) throws {
-        try self.javascriptBridge.dispatchEvent(to: self, name: name, content: content)
+        try self.javascriptBridge?.dispatchEvent(to: self, name: name, content: content)
     }
 }

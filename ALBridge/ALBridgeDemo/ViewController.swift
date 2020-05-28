@@ -28,11 +28,11 @@ class ViewController: UIViewController {
         let bridge = ALBridge.init()
         webView.registerJSBridge(bridge)
         
-        webView.javascriptBridge.handlers["test_action1"] = { (message, param, _, _) in
+        webView.javascriptBridge?.handlers["test_action1"] = { (message, param, _, _) in
             self.logView.text += "\(param as! String) \n"
         }
         
-        webView.javascriptBridge.handlers["test_action2"] = { (message, param, completionHandler, progressChangedHandler) in
+        webView.javascriptBridge?.handlers["test_action2"] = { (message, param, completionHandler, progressChangedHandler) in
             
             self.logView.text += "\(String(describing: param)) \n"
             
@@ -58,7 +58,7 @@ class ViewController: UIViewController {
             
         }
         
-        webView.javascriptBridge.addWhitelist(url)
+        webView.javascriptBridge?.addWhitelist(url)
         let request = URLRequest(url: url)
         webView.load(request)
     }
